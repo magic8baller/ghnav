@@ -18,13 +18,6 @@ const App = () => {
 	const [alert, setAlert] = useState(null)
 	const [repos, setRepos] = useState([])
 
-	// async componentDidMount() {
-	// 	const {REACT_APP_GITHUB_CLIENT_ID, REACT_APP_GITHUB_SECRET} = process.env
-	// 	const mountedRes = await axios.get(`https://api.github.com/users?client_id=${REACT_APP_GITHUB_CLIENT_ID}&client_secret=${REACT_APP_GITHUB_SECRET}`)
-	// 	setUsers(mountedRes.data)
-	// 	setLoading(false)
-	// }
-
 	const getUser = async (username) => {
 		setLoading(true)
 		const {REACT_APP_GITHUB_CLIENT_ID, REACT_APP_GITHUB_SECRET} = process.env
@@ -54,14 +47,7 @@ const App = () => {
 		}, 5000);
 	}
 
-	const searchUsers = async (text) => {
-		const {REACT_APP_GITHUB_CLIENT_ID, REACT_APP_GITHUB_SECRET} = process.env
-		setLoading(true)
-		const searchRes = await axios.get(`https://api.github.com/search/users?q=${text}&client_id=${REACT_APP_GITHUB_CLIENT_ID}&client_secret=${REACT_APP_GITHUB_SECRET}`)
-		setUsers(searchRes.data.items)
-		setLoading(false)
 
-	}
 
 	return (
 		<GithubState>
@@ -73,7 +59,7 @@ const App = () => {
 						<Switch>
 							<Route exact path='/' render={props => (
 								<>
-									<Search clearSearchResults={clearSearchResults} searchUsers={searchUsers} showClear={users.length > 0} setAlert={showAlert} />
+									<Search clearSearchResults={clearSearchResults} showClear={users.length > 0} setAlert={showAlert} />
 									{<Users users={users} isLoading={isLoading} />}
 								</>
 							)} />
