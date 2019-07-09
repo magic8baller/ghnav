@@ -1,6 +1,6 @@
+import axios from 'axios';
 import React, {useReducer} from 'react';
-import {SEARCH_USERS, SET_LOADING} from '../types';
-import axios from 'axios'
+import {CLEAR_USERS, GET_USER, GET_USER_REPOS, SEARCH_USERS, SET_LOADING} from '../types';
 import GithubContext from './githubContext';
 import githubReducer from './githubReducer';
 
@@ -21,16 +21,30 @@ const GithubState = props => {
 		//dispatches type of setLoading to reducer
 		setLoading()
 		const searchRes = await axios.get(`https://api.github.com/search/users?q=${text}&client_id=${REACT_APP_GITHUB_CLIENT_ID}&client_secret=${REACT_APP_GITHUB_SECRET}`)
-		// setUsers(searchRes.data.items)
-		dispatch({type: SEARCH_USERS, payload: searchRes.data})
+
+		dispatch({type: SEARCH_USERS, payload: searchRes.data.items})
 	}
 
 	//GET USER
+	const getUser = async username => {
+		setLoading()
 
+		const userRes = await axios.get(`https://api.github.com/users/${username}?client_id=${REACT_APP_GITHUB_CLIENT_ID}&client_secret=${REACT_APP_GITHUB_SECRET}`);
+
+		dispatch({type: GET_USER, payload: userRes.data})
+
+	}
 	//CLEAR RESULTS
-
+	const clearSearchResults = () => dispatch({type: CLEAR_USERS})
 	// GET REPOS
 
+
+	const getUserRepos = async (username) => {
+		setLoading(true)
+		const {REACT_APP_GITHUB_CLIENT_ID, REACT_APP_GITHUB_SECRET} = process.env
+		const repoRes = await axios.get(`https://api.github.com/users/${username}/repos?per_page=5&sort=created:asc&client_id=${REACT_APP_GITHUB_CLIENT_ID}&client_secret=${REACT_APP_GITHUB_SECRET}`)
+		dispatch({type: GET_USER_REPOS, payload: repoRes.data})
+	}
 
 	//set loading: dispatch to reducer pulled from useReducer hook
 	// must have type, dontt need payload
@@ -42,7 +56,11 @@ const GithubState = props => {
 			users: state.users,
 			user: state.user,
 			repos: state.repos,
-			isLoading: state.isLoading
+			isLoading: state.isLoading,
+			searchUsers,
+			getUser,
+			clearSearchResults,
+			getUserRepos
 		}}>
 		{props.children}
 	</GithubContext.Provider>

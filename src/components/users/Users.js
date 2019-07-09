@@ -1,22 +1,23 @@
-import PropTypes from 'prop-types';
-import React from 'react';
+import React, {useContext} from 'react';
+import GithubContext from '../../context/github/githubContext';
 import Spinner from '../layout/Spinner';
 import UserCard from './UserCard';
 
-const Users = ({users, isLoading}) => {
+const Users = () => {
+	const githubContext = useContext(GithubContext)
+	const {isLoading, users} = githubContext
 	const userList = users.map(user => <UserCard key={user.id} user={user} />)
-
-	return isLoading ? <Spinner /> : (
-		<div style={userStyle}>
-			{userList}
-		</div>
-	)
+	if (isLoading) {
+		return <Spinner />
+	} else {
+		return (
+			<div style={userStyle}>
+				{userList}
+			</div>
+		)
+	}
 }
 
-Users.propTypes = {
-	users: PropTypes.array.isRequired,
-	isLoading: PropTypes.bool.isRequired
-}
 
 const userStyle = {
 	display: 'grid',
