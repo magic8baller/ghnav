@@ -4,6 +4,7 @@ import './App.css';
 import Alert from './components/layout/Alert';
 import Navbar from './components/layout/Navbar';
 import About from './components/pages/About';
+import Error from './components/pages/Error';
 import Home from './components/pages/Home';
 import User from './components/users/User';
 import AlertState from './context/alert/AlertState';
@@ -25,6 +26,7 @@ const App = () => {
 								<Route exact path='/' component={Home} />
 								<Route exact path='/about' component={About} />
 								<Route exact path='/user/:login' component={User} />
+								<Route component={Error} />
 							</Switch>
 						</div>
 					</div>

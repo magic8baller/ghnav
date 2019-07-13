@@ -15,13 +15,24 @@ const GithubState = props => {
 
 	const [state, dispatch] = useReducer(githubReducer, initialState);
 
-	const {REACT_APP_GITHUB_CLIENT_ID, REACT_APP_GITHUB_SECRET} = process.env
+	const {REACT_APP_GITHUB_CLIENT_ID, REACT_APP_GITHUB_SECRET, GITHUB_CLIENT_ID, GITHUB_SECRET} = process.env
+
+	let githubClientId;
+	let githubClientSecret;
+
+	if (process.env.NODE_ENV !== 'production') {
+		githubClientId = REACT_APP_GITHUB_CLIENT_ID;
+		githubClientSecret = REACT_APP_GITHUB_SECRET;
+	} else {
+		githubClientId = GITHUB_CLIENT_ID;
+		githubClientSecret = GITHUB_SECRET;
+	}
 
 	//search users
 	const searchUsers = async (text) => {
 		//dispatches type of setLoading to reducer
 		setLoading()
-		const searchRes = await axios.get(`https://api.github.com/search/users?q=${text}&client_id=${REACT_APP_GITHUB_CLIENT_ID}&client_secret=${REACT_APP_GITHUB_SECRET}`)
+		const searchRes = await axios.get(`https://api.github.com/search/users?q=${text}&client_id=${githubClientId}&client_secret=${githubClientSecret}`)
 
 		dispatch({type: SEARCH_USERS, payload: searchRes.data.items})
 	}
@@ -30,7 +41,7 @@ const GithubState = props => {
 	const getUser = async username => {
 		setLoading()
 
-		const userRes = await axios.get(`https://api.github.com/users/${username}?client_id=${REACT_APP_GITHUB_CLIENT_ID}&client_secret=${REACT_APP_GITHUB_SECRET}`);
+		const userRes = await axios.get(`https://api.github.com/users/${username}?client_id=${githubClientId}&client_secret=${githubClientSecret}`);
 
 		dispatch({type: GET_USER, payload: userRes.data})
 	}
@@ -40,8 +51,8 @@ const GithubState = props => {
 	// GET REPOS
 	const getUserRepos = async (username) => {
 		setLoading()
-		const {REACT_APP_GITHUB_CLIENT_ID, REACT_APP_GITHUB_SECRET} = process.env
-		const repoRes = await axios.get(`https://api.github.com/users/${username}/repos?per_page=5&sort=created:asc&client_id=${REACT_APP_GITHUB_CLIENT_ID}&client_secret=${REACT_APP_GITHUB_SECRET}`)
+		const {githubClientId, githubClientSecret} = process.env
+		const repoRes = await axios.get(`https://api.github.com/users/${username}/repos?per_page=5&sort=created:asc&client_id=${githubClientId}&client_secret=${githubClientSecret}`)
 		dispatch({type: GET_USER_REPOS, payload: repoRes.data})
 	}
 
